@@ -7,27 +7,26 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Java
-        uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '21'
 
+      - uses: gradle/actions/setup-gradle@v5
+        with:
+          gradle-version: '9.1.0'
+
       - name: Extract ZIP
         run: unzip bober-client.zip -d source
 
-      - name: Build JAR
-        run: |
-          cd source
-          chmod +x gradlew
-          ./gradlew build
+      - name: Build Mod
+        working-directory: source/bober-client
+        run: gradle build
 
       - name: Upload JAR
         uses: actions/upload-artifact@v4
         with:
           name: bober-client-jar
-          path: source/**/build/libs/*.jar
-          
+          path: source/bober-client/build/libs/*.jar
