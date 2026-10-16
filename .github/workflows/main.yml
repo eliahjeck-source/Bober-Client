@@ -1,0 +1,33 @@
+name: Build Minecraft Mod
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Extract ZIP
+        run: unzip bober-client.zip -d source
+
+      - name: Build JAR
+        run: |
+          cd source
+          chmod +x gradlew
+          ./gradlew build
+
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: bober-client-jar
+          path: source/**/build/libs/*.jar
+          
